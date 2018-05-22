@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Object-oriented JavaScript example</title> 
+  </head>
+
+  <body>
+    <header>
+
+    </header>
+    <section>
+
+    </section>
+  </body>
+
+    <script>
+        //creating an object
+        var person = {
+            name: {
+                first: 'Sílvia',
+                last: 'Baptista'
+            },
+            age: 26,
+            gender: 'female',
+            interests: ['gaming', 'coding'],
+            bio: function() {
+                return this.name.first + ' ' + this.name.last + ' is ' + this.age + ' years old. She likes ' + this.interests[0] + ' and ' + this.interests[1] + '.';
+            },
+            greeting: function() {
+                return 'Hi! I\'m ' + this.name.first + '.';
+            }
+        };
+
+        //creating the constructor function
+        //only the properties are defined here
+        function Person(first, last, age, gender, interests){
+            this.name = {
+                'first': first,
+                'last' : last
+            };
+            this.age = age;
+            this.gender = gender;
+            this.interests = interests;
+            this.bio = function() {
+                //defines the base string that contains no gender nor interests variations
+                var string = this.name.first + ' ' + this.name.last + ' is ' + this.age + ' years old. ';
+                var pronoun; //variable to define the pronoun.
+
+                //verify which gender was defined, and define the pronoun for the appropriate case
+                if (this.gender == 'male' || this.gender == 'Male' || this.gender == 'm' || this.gender == 'M') pronoun = 'He likes ';
+                else if (this.gender === 'female' || this.gender === 'Female' || this.gender === 'f' || this.gender === 'F') pronoun = 'She likes ';
+                else pronoun = 'They like ';
+
+                //add previous result to string
+                string += pronoun;
+
+                if(this.interests.length === 1) {
+                    string += this.interests[0] + '.';
+                } else if(this.interests.length === 2) {
+                    string += this.interests[0] + ' and ' + this.interests[1] + '.';
+                } else {
+                    for(var i = 0; i < this.interests.length; i++) {
+                        if(i === this.interests.length - 1) string += 'and ' + this.interests[i] + '.';
+                        else string += this.interests[i] + ', ';
+                    }
+                }
+                return string;
+            };
+        }
+
+        //the methods are all defined in the constructor's prototype
+        Person.prototype.greeting = function() {
+            return 'Hi! I\'m ' + this.name.first + '.';
+        };
+
+        //object instances
+        var person1 = new Person('Rui', 'Gonçalves', 21, 'male', ['gaming', 'coding', 'driving']);
+        //var person2 = new Person('Sílvia', 'Baptista', 26, 'female', ['gaming', 'coding', 'crafting']);
+        //var person3 = new Person('Maria', 'Gomes', 33, 'neutral', ['sewing', 'painting']);
+
+        //-------*******-------
+        //     CONSTRUCTOR
+        //-------*******-------
+
+        //defines a constructor
+        function Teacher(first, last, age, gender, interests, subject){
+            //call => calls a function defined somewhere else, but in the current context
+            //the constructor con inherit the desired parameters from the called function.
+            //in this case, Teacher() inherits all parameters from Person()
+            Person.call(this, first, last, age, gender, interests);
+            this.subject = subject;
+        }
+        
+        //-------*******-------
+        //  OBJECT PROTOTYPES
+        //-------*******-------
+
+        //each object has a prototype object, which acts as a template object that it inherits methods and properties from.
+        //an object's prototype object may also have a prototype object
+        //a more common pattern for more object definitions is to DEFINE THE PROPERTIES INSIDE THE CONSTRUCTOR, and the METHODS ON THE PROTOTYPE
+        //https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Object_prototypes
+
+        //------- PROTOTYPAL INHERITANCE -------
+        //https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Inheritance
+        //create a new object and make it the value of Teacher.prototype
+        Teacher.prototype = Object.create(Person.prototype);
+        //returns Teacher() plus inheriting from Person()
+        //This is useful because we don't need to create a new object, since the parameters are similar
+        Teacher.prototype.constructor = Teacher;
+
+        //giving Teacher() a new greeting() function
+        //returns the teacher's greeting, defines an appropriate name prefix
+        Teacher.prototype.greeting = function() {
+            var prefix;
+
+            if (this.gender === 'male' || this.gender === 'Male' || this.gender === 'm' || this.gender === 'M') prefix = 'Mr.';
+            else if (this.gender === 'female' || this.gender === 'Female' || this.gender === 'f' || this.gender === 'F') prefix = 'Mrs.';
+            else prefix = 'Mx.';
+            
+            return 'Hello. My name is ' + prefix + ' ' + this.name.last + ', and I teach ' + this.subject + '.';
+        };
+
+        var teacher1 = new Teacher('Sara', 'Silva', 34, 'female', ['hiking','cross-stitch'],'math');
+
+        //------- CONSTRUCTOR -------
+        function Student(first, last, age, gender, grade, interests){
+            Person.call(this, first, last, age, gender, interests);
+            this.grade = grade;
+        }
+
+        //------- PROTOTYPAL INHERITANCE -------
+        Student.prototype = Object.create(Person.prototype);
+        Student.prototype.constructor = Student;
+
+        Student.prototype.greeting = function() {
+            var string = 'Hi! I\'m ' + this.name.first + ' ' + this.name.last + ' and I\'m ' + this.age + ' years old. ';
+            var ordinalNumber;
+
+            if (this.grade === 1) ordinalNumber = '1st grade';
+            else if (this.grade === 2) ordinalNumber = '2nd grade';
+            else if (this.grade === 3) ordinalNumber = '3rd grade';
+            else ordinalNumber = this.grade + 'th grade';
+
+            string += 'I attend the ' + ordinalNumber + ' and I like ';
+
+            if(this.interests.length === 1) {
+                string += this.interests[0] + '.';
+            } else if(this.interests.length === 2) {
+                string += this.interests[0] + ' and ' + this.interests[1] + '.';
+            } else {
+                for(var i = 0; i < this.interests.length; i++) {
+                    if(i === this.interests.length - 1) string += 'and ' + this.interests[i] + '.';
+                    else string += this.interests[i] + ', ';
+                }
+            }
+            
+            return string;
+        };
+
+        var student1 = new Student('Maria', 'Sousa', 9, 'female', 4, ['playing','cars','games']);
+
+        //-------*******-------
+        //  WORKING WITH JSON
+        //-------*******-------
+
+        //https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/JSON
+        //a JSON is a string whose format very much resembles JavaScript object literal format
+        //data types included: strings, numbers, arrays, booleans, and other object literals
+        //allows to construct a data hierarchy
+        //EXAMPLE:
+
+        var Supermarket = {
+            "name": "Continente",
+            "town": "Matosinhos",
+            "established": 1980,
+            "active": true,
+            "currency": "euro",
+            "products": [
+                {
+                    "productName": "arroz",
+                    "brands": [
+                        {
+                            "brandName": "Cigala",
+                            "stock": 20,
+                            "price": 0.99
+                        },
+                        {
+                            "brandName": "Continente",
+                            "stock": 10,
+                            "price": 0.79
+                        },
+                        {
+                            "brandName": "Pato Real",
+                            "stock": 5,
+                            "price": 1.09
+                        }
+                    ]
+                },
+                {
+                    "productName": "massa",
+                    "brands": [
+                    {
+                            "brandName": "Milaneza",
+                            "stock": 20,
+                            "price": 1.99
+                        },
+                        {
+                            "brandName": "Continente",
+                            "stock": 15,
+                            "price": 1.79
+                        },
+                        {
+                            "brandName": "Nacional",
+                            "stock": 5,
+                            "price": 2.09
+                        }
+                    ]
+                },
+                {
+                    "productName": "Bebidas",
+                    "brands": [
+                    {
+                            "brandName": "Lipton Ice Tea 1L",
+                            "stock": 20,
+                            "price": 1.99
+                        },
+                        {
+                            "brandName": "Ice Tea Continente 1L",
+                            "stock": 15,
+                            "price": 1.79
+                        },
+                        {
+                            "brandName": "Super Bock Pack 6",
+                            "stock": 5,
+                            "price": 2.09
+                        },
+                        {
+                            "brandName": "Água Luso 5L",
+                            "stock": 5,
+                            "price": 2.09
+                        }
+                    ]
+                }
+            ]
+        }
+
+        //to fetch the rice product, the input should be:
+        var productRice = Supermarket["products"][0]["productName"];
+        //to fetch the brand, the input should be:
+        var productBrand = Supermarket["products"][0]["brands"];
+
+        //JSON is purely a data format - it contains only properties, no methods.
+        //JSON requires double quotes(") to be used around strings and property names. Single quotes(') are not valid.
+        //ALWAYS validate the data, as misplaced commas or colons may return an error.
+        //ONLY quoted strings may be used as properties.
+
+        //store header and section in variables
+        var header = document.querySelector('header');
+        var section = document.querySelector('section');
+        var requestURL = 'https://github.com/sbaptista18/JS_Study/blob/master/supermarket.json';
+        var request = new XMLHttpRequest();
+        request.open('GET', requestURL);
+        request.responseType = 'json';
+        request.send();
+        request.onload = function() {
+            var superMarket = request.response;
+            populateHeader(superMarket);
+            showHeroes(superMarket);
+        }
+
+        function populateHeader(jsonObj) {
+            var myH1 = document.createElement('h1');
+            myH1.textContent = jsonObj['name'];
+            header.appendChild(myH1);
+
+            var myPara = document.createElement('p');
+            myPara.textContent = 'Cidade: ' + jsonObj['town'] + ' // Inauguração: ' + jsonObj['established'];
+            header.appendChild(myPara);
+        }
+    </script>
+</html>
