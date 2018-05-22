@@ -8,21 +8,9 @@
         {
             "productName": "Arroz",
             "brands": [
-                {
-                    "brandName": "Cigala",
-                    "stock": 20,
-                    "price": 0.99
-                },
-                {
-                    "brandName": "Continente",
-                    "stock": 10,
-                    "price": 0.79
-                },
-                {
-                    "brandName": "Pato Real",
-                    "stock": 5,
-                    "price": 1.09
-                }
+                "Cigala",
+                "Pato Real",
+                "Continente"
             ]
         },
         {
